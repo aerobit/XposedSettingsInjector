@@ -24,7 +24,6 @@ import static de.robv.android.xposed.XposedHelpers.setObjectField;
 public class XposedMod implements IXposedHookLoadPackage {
     @SuppressWarnings("unused")
     private static final String TAG = "InjectXposedPreference";
-    private static List<String> activeModules;
 
     @Override
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
@@ -49,8 +48,8 @@ public class XposedMod implements IXposedHookLoadPackage {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Context context = (Context) param.args[2];
                 PackageManager pm = context.getPackageManager();
-                ArrayList<ApplicationInfo> xposedModulesList = new ArrayList<ApplicationInfo>();
-                List<String> activeModules = ModuleLoader.getActiveModulesWithSu();
+                ArrayList<ApplicationInfo> xposedModulesList = new ArrayList<>();
+                List<String> activeModules = ModuleLoader.getActiveModules();
 
                 for (PackageInfo pkg : context.getPackageManager().getInstalledPackages(PackageManager.GET_META_DATA)) {
                     ApplicationInfo app = pkg.applicationInfo;

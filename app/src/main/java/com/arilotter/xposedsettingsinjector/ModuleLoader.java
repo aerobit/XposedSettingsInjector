@@ -6,8 +6,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,47 +40,18 @@ public class ModuleLoader {
         return intent;
     }
 
-    static List<String> getActiveModulesWithSu() {
-        List<String> modules = new ArrayList<>();
-//        try {
-//            String line;
-//
-//            BufferedReader br = new BufferedReader(new FileReader(MODULES_LIST_FILE));
-//            while ((line = br.readLine()) != null) {
-//                modules.add(line);
-//                log("Settings: Found Module: " + line);
-//            }
-//            br.close();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        // TODO read this file better
-        Process process;
-        try {
-            String line;
-            process = new ProcessBuilder("su", "-c", "cat", MODULES_LIST_FILE).start();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            while ((line = in.readLine()) != null) {
-                modules.add(line);
-            }
-            in.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return modules;
-    }
-
     static List<String> getActiveModules() {
         List<String> modules = new ArrayList<>();
         try {
-            String line;
+            InputStream ips = new FileInputStream(MODULES_LIST_FILE);
+            InputStreamReader isr = new InputStreamReader(ips);
+            BufferedReader br = new BufferedReader(isr);
 
-            BufferedReader br = new BufferedReader(new FileReader(MODULES_LIST_FILE));
+            String line;
             while ((line = br.readLine()) != null) {
                 modules.add(line);
             }
-            br.close();
+            ips.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
